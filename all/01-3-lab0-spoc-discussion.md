@@ -44,17 +44,17 @@
 搭建好实验环境，请描述碰到的困难和解决的过程。
 - [x]  
 
-> 
+> 没有问题
 
 熟悉基本的git命令行操作命令，从github上的[ucore git repo](http://www.github.com/chyyuu/ucore_lab)下载ucore lab实验
 - [x]  
 
-> 
+> 已完成
 
 尝试用qemu+gdb（or ECLIPSE-CDT）调试lab1
 - [x]  
 
-> 
+> 已完成
 
 对于如下的代码段，请说明”：“后面的数字是什么含义
 ```
@@ -73,7 +73,7 @@ struct gatedesc {
 ```
 - [x]  
 
-> 
+> 指定了一个struct中每个成员所占的位数
 
 对于如下的代码段，
 ```
@@ -98,12 +98,36 @@ SETGATE(intr, 0,1,2,3);
 请问执行上述指令后， intr的值是多少？
 - [x]  
 
-> 
+> windows: 60930
+>
+> mac: 65538
 
 请分析 [list.h](https://github.com/chyyuu/ucore_lab/blob/master/labcodes/lab2/libs/list.h)内容中大致的含义，并能include这个文件，利用其结构和功能编写一个数据结构链表操作的小C程序
 - [x]  
 
-> 
+>
+#include "list.h"
+#include <cstdio>
+
+int main() {
+	list_entry *a = new list_entry();
+	list_entry *b = new list_entry();
+	list_entry *c = new list_entry();
+	list_entry *d = new list_entry();
+	list_entry *e = new list_entry();
+	list_entry *f = new list_entry();
+	list_init(a);
+	list_init(e);
+	list_add(a, b);
+	list_add_before(a, c);
+	list_add_after(a, d);
+	list_del(c);
+	list_del_init(b);
+	printf("%d\n", list_empty(e));
+	printf("%d\n", list_next(a));
+	printf("%d\n", list_prev(e));
+	return 0;
+}
 
 ---
 

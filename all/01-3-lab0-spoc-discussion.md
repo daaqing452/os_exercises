@@ -20,7 +20,7 @@
 哪些困难（请分优先级）会阻碍你自主完成lab实验？
 - [x]  
 
-> ucore的接口  
+> ucore的接口
 
 如何把一个在gdb中或执行过程中出现的物理/线性地址与你写的代码源码位置对应起来？
 - [x]  
@@ -102,7 +102,7 @@ SETGATE(intr, 0,1,2,3);
 
 > windows: 60930
 >
-> mac: 65538
+> ios: 65538
 
 请分析 [list.h](https://github.com/chyyuu/ucore_lab/blob/master/labcodes/lab2/libs/list.h)内容中大致的含义，并能include这个文件，利用其结构和功能编写一个数据结构链表操作的小C程序
 - [x]  

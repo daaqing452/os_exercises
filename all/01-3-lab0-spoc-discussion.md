@@ -109,7 +109,6 @@ SETGATE(intr, 0,1,2,3);
 ```
 #include "list.h"
 #include <cstdio>
-
 int main() {
 	list_entry *a = new list_entry();
 	list_entry *b = new list_entry();

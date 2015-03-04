@@ -106,6 +106,7 @@ SETGATE(intr, 0,1,2,3);
 - [x]  
 
 >
+```
 #include "list.h"
 #include <cstdio>
 
@@ -128,6 +129,7 @@ int main() {
 	printf("%d\n", list_prev(e));
 	return 0;
 }
+```
 
 ---
 

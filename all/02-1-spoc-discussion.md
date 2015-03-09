@@ -16,6 +16,18 @@
  1. 举例说明Linux中有哪些中断，哪些异常？
  1. Linux的系统调用有哪些？大致的功能分类有哪些？  (w2l1)
 
+> Linux的系统调用有fork、open等上百个
+>
+> 大致功能分类有：
+> * 进程控制：如fork、clone等
+> * 文件操作：如open、create等
+> * 系统控制：如uselib、time等
+> * 内存管理：如brk、sbrk等
+> * 网络管理：如gethostid、sethostid等
+> * socket控制：如socket、bind等
+> * 用户管理：如getuid、setuid等
+> * 进程间通信：如ipc、kill、pipe等
+
 ```
   + 采分点：说明了Linux的大致数量（上百个），说明了Linux系统调用的主要分类（文件操作，进程管理，内存管理等）
   - 答案没有涉及上述两个要点；（0分）

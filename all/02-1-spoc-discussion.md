@@ -37,6 +37,8 @@
  ```
  
  1. 以ucore lab8的answer为例，uCore的系统调用有哪些？大致的功能分类有哪些？(w2l1)
+
+> 系统调用大约20几个
 > * 进程控制：sys_exit、sys_fork、sys_wait、sys_exec、sys_yield、sys_getpid、sys_lab6_set_priority、sys_sleep
 > * 进程间通信：sys_kill,
 > * 文件操作：sys_putc、sys_pgdir、sys_open、sys_close、sys_read、sys_write、sys_seek、sys_fstat、sys_fsync、sys_getcwd、sys_getdirentry、sys_dup

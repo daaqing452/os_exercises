@@ -37,7 +37,11 @@
  ```
  
  1. 以ucore lab8的answer为例，uCore的系统调用有哪些？大致的功能分类有哪些？(w2l1)
- 
+> * 进程控制：sys_exit、sys_fork、sys_wait、sys_exec、sys_yield、sys_getpid、sys_lab6_set_priority、sys_sleep
+> * 进程间通信：sys_kill,
+> * 文件操作：sys_putc、sys_pgdir、sys_open、sys_close、sys_read、sys_write、sys_seek、sys_fstat、sys_fsync、sys_getcwd、sys_getdirentry、sys_dup
+> * 系统控制：sys_gettime
+
  ```
   + 采分点：说明了ucore的大致数量（二十几个），说明了ucore系统调用的主要分类（文件操作，进程管理，内存管理等）
   - 答案没有涉及上述两个要点；（0分）
@@ -49,6 +53,11 @@
 ## 3.4 linux系统调用分析
  1. 通过分析[lab1_ex0](https://github.com/chyyuu/ucore_lab/blob/master/related_info/lab1/lab1-ex0.md)了解Linux应用的系统调用编写和含义。(w2l1)
  
+> 将参数 系统调用号SYS_write、标准输出STDOUT、常量字符串$hello、字符串长度12 做为参数压入指定寄存器，通过int 0x80进行系统调用
+>
+> * objdump：反汇编目标文件或者可执行文件的命令
+> * nm：显示关于对象文件、可执行文件以及对象文件库里的符号信息
+> * file：检测文件类型的命令
 
  ```
   + 采分点：说明了objdump，nm，file的大致用途，说明了系统调用的具体含义
@@ -61,6 +70,15 @@
  
  1. 通过调试[lab1_ex1](https://github.com/chyyuu/ucore_lab/blob/master/related_info/lab1/lab1-ex1.md)了解Linux应用的系统调用执行过程。(w2l1)
  
+> strace用途：显示程序执行过程中每个系统调用的 名称、时间、占时间百分比、调用次数、错误次数 等
+>
+> 系统调用具体执行过程：
+> * 应用准备相应参数
+> * 应用调用系统调用接口
+> * 操作系统内核对系统调用进行识别和运行
+> * 操作系统内核根据不同情况使用不同硬件进行操作
+
+
 
  ```
   + 采分点：说明了strace的大致用途，说明了系统调用的具体执行过程（包括应用，CPU硬件，操作系统的执行过程）

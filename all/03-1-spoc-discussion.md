@@ -34,7 +34,7 @@ NOTICE
 请参考ucore lab2代码，采用`struct pmm_manager` 根据你的`学号 mod 4`的结果值，选择四种（0:最优匹配，1:最差匹配，2:最先匹配，3:buddy systemm）分配算法中的一种或多种，在应用程序层面(可以 用python,ruby,C++，C，LISP等高语言)来实现，给出你的设思路，并给出测试用例。 (spoc)
 
 ```
-#include <cstido>
+#include <cstdio>
 
 //	页
 struct Page {
@@ -42,7 +42,7 @@ struct Page {
 };
 
 //	内存
-Page* memory[1 << 20];
+Page memory[1 << 20];
 
 //	一段存储单元
 struct Unit {
@@ -70,7 +70,7 @@ struct Manager {
 	}
 	
 	//	链表中删除
-	void deleteUnit(Unit *a, (Unit *) &head) {
+	void deleteUnit(Unit *a, Unit *&head) {
 		if (a->prev != NULL) a->prev->next = a->next;
 		if (a->next != NULL) a->next->prev = a->prev;
 		if (head == a) head = a->next;
@@ -86,13 +86,13 @@ struct Manager {
 	//	链表中前后合并
 	void mergeUnit(Unit *a) {
 		Unit *x = a->prev;
-		if (x != NULL && x->start + x->size == a) {
+		if (x != NULL && x->start + x->size == a->start) {
 			x->size += a->size;
 			deleteUnit(a, unused);
 			a = x;
 		}
 		Unit *y = a->next;
-		if (y != NULL && a->start + a->size == y) {
+		if (y != NULL && a->start + a->size == y->start) {
 			a->size += y->size;
 			deleteUnit(y, unused);
 		}
@@ -119,7 +119,7 @@ struct Manager {
 			b->size = s;
 			b->prev = NULL;
 			b->next = used;
-			renewLink();
+			renewLink(b);
 			used = b;
 			
 			//	处理剩下的内存
@@ -148,7 +148,7 @@ struct Manager {
 		s = a->size;
 		deleteUnit(a, used);
 		
-		Unit *a = unused;
+		a = unused;
 		if (a == NULL || a->start > page) {
 			//	新空闲插在最前面
 			Unit *b = new Unit();
@@ -178,7 +178,18 @@ struct Manager {
 
 	void print() {
 		Unit *a = unused;
-		
+		printf("unused\t");
+		while (a != NULL) {
+			printf(" -> (%d,%d)", a->start - memory, a->size);
+			a = a->next;
+		}
+		a = used;
+		printf("\nused\t");
+		while (a != NULL) {
+			printf(" -> (%d,%d)", a->start - memory, a->size);
+			a = a->next;
+		}
+		printf("\n\n");
 	}
 };
 
@@ -186,7 +197,21 @@ struct Manager {
 int main() {
 	
 	Manager *manage = new Manager();
+	manage->print();
+	manage->alloc(100 * 4);
+	manage->print();
+	manage->alloc(1000 * 4);
+	manage->print();
+	manage->alloc(10000 * 4);
+	manage->print();
+	manage->free(memory + 0);
+	manage->print();
+	manage->free(memory + 1100);
+	manage->print();
+	manage->free(memory + 100);
+	manage->print();
 	
+	return 0;
 }
 ```
 

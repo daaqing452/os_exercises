@@ -33,6 +33,163 @@ NOTICE
 
 请参考ucore lab2代码，采用`struct pmm_manager` 根据你的`学号 mod 4`的结果值，选择四种（0:最优匹配，1:最差匹配，2:最先匹配，3:buddy systemm）分配算法中的一种或多种，在应用程序层面(可以 用python,ruby,C++，C，LISP等高语言)来实现，给出你的设思路，并给出测试用例。 (spoc)
 
+```
+#include <cstido>
+
+//	页
+struct Page {
+	int _;
+};
+
+//	内存
+Page* memory[1 << 20];
+
+//	一段存储单元
+struct Unit {
+	Page* start;
+	int size;
+	Unit *prev, *next;
+};
+
+//	内存管理
+struct Manager {
+	
+	//	未使用内存链表
+	Unit *unused;
+	
+	//	已使用内存链表
+	Unit *used;
+	
+	Manager() {
+		Unit *a = new Unit();
+		a->start = memory;
+		a->size = 1 << 20;
+		a->prev = a->next = NULL;
+		unused = a;
+		used = NULL;
+	}
+	
+	//	链表中删除
+	void deleteUnit(Unit *a, (Unit *) &head) {
+		if (a->prev != NULL) a->prev->next = a->next;
+		if (a->next != NULL) a->next->prev = a->prev;
+		if (head == a) head = a->next;
+		delete a;
+	}
+	
+	//	链表中将新单元与前后建立连接
+	void renewLink(Unit *a) {
+		if (a->prev != NULL) a->prev->next = a;
+		if (a->next != NULL) a->next->prev = a;
+	}
+	
+	//	链表中前后合并
+	void mergeUnit(Unit *a) {
+		Unit *x = a->prev;
+		if (x != NULL && x->start + x->size == a) {
+			x->size += a->size;
+			deleteUnit(a, unused);
+			a = x;
+		}
+		Unit *y = a->next;
+		if (y != NULL && a->start + a->size == y) {
+			a->size += y->size;
+			deleteUnit(y, unused);
+		}
+	}
+	
+	//	申请内存
+	Page* alloc(int s) {
+	
+		//	归整为4的倍数
+		s = (s + 3) / 4;
+		
+		//	从前往后找空闲内存
+		Unit *a = unused;
+		Page *result = NULL;
+		while (a != NULL) {
+			if (a->size < s) {
+				a = a->next;
+				continue;
+			}
+			
+			//	找到足够大的内存
+			Unit *b = new Unit();
+			b->start = result = a->start;
+			b->size = s;
+			b->prev = NULL;
+			b->next = used;
+			renewLink();
+			used = b;
+			
+			//	处理剩下的内存
+			if (a->size > s) {
+				a->start = a->start + s;
+				a->size -= s;
+			} else {
+				deleteUnit(a, unused);
+			}
+			break;
+		}
+		
+		return result;
+	}
+	
+	//	释放内存
+	void free(Page *page) {
+		
+		//	找到指定的单元
+		Unit *a = used;
+		int s = 0;
+		while (a != NULL) {
+			if (a->start == page) break;
+			a = a->next;
+		}
+		s = a->size;
+		deleteUnit(a, used);
+		
+		Unit *a = unused;
+		if (a == NULL || a->start > page) {
+			//	新空闲插在最前面
+			Unit *b = new Unit();
+			b->start = page;
+			b->size = s;
+			b->prev = NULL;
+			b->next = unused;
+			renewLink(b);
+			b->next->prev = b;
+			unused = b;
+			mergeUnit(b);
+		} else {
+			//	新空闲插在中间
+			while (a != NULL) {
+				if (a->next == NULL || a->next->start > page) break;
+				a = a->next;
+			}
+			Unit *b = new Unit();
+			b->start = page;
+			b->size = s;
+			b->prev = a;
+			b->next = a->next;
+			renewLink(b);
+			mergeUnit(b);
+		}
+	}
+
+	void print() {
+		Unit *a = unused;
+		
+	}
+};
+
+
+int main() {
+	
+	Manager *manage = new Manager();
+	
+}
+```
+
 --- 
 
 ## 扩展思考题

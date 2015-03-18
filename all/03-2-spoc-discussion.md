@@ -56,16 +56,54 @@ PT6..0:页表的物理基址>>5
 ```
 在[物理内存模拟数据文件](./03-2-spoc-testdata.md)中，给出了4KB物理内存空间的值，请回答下列虚地址是否有合法对应的物理内存，请给出对应的pde index, pde contents, pte index, pte contents。
 ```
-Virtual Address 6c74
-Virtual Address 6b22
-Virtual Address 03df
-Virtual Address 69dc
-Virtual Address 317a
-Virtual Address 4546
-Virtual Address 2c03
-Virtual Address 7fd7
-Virtual Address 390e
-Virtual Address 748b
+Virtual Address 6c74:
+  --> pde index:0x8  pde contents:(valid 1, pfn 20)
+    --> pte index:0xb  pte contents:(valid 1, pfn 61)
+      --> Translates to Physical Address c34 --> Value: 6
+      
+Virtual Address 6b22:
+  --> pde index:0x8  pde contents:(valid 1, pfn 52)
+    --> pte index:0xb  pte contents:(valid 1, pfn 47)
+      --> Translates to Physical Address 8e2 --> Value: 1a
+      
+Virtual Address 3df:
+  --> pde index:0x8  pde contents:(valid 1, pfn 5a)
+    --> pte index:0xb  pte contents:(valid 1, pfn 5)
+      --> Translates to Physical Address bf --> Value: f
+      
+Virtual Address 69dc:
+  --> pde index:0x8  pde contents:(valid 1, pfn 52)
+    --> pte index:0xb  pte contents:(valid 0, pfn 7f)
+      --> Fault (page table entry not valid)
+      
+Virtual Address 317a:
+  --> pde index:0x8  pde contents:(valid 1, pfn 18)
+    --> pte index:0xb  pte contents:(valid 1, pfn 35)
+      --> Translates to Physical Address 6ba --> Value: 1e
+      
+Virtual Address 4546:
+  --> pde index:0x8  pde contents:(valid 1, pfn 21)
+    --> pte index:0xb  pte contents:(valid 0, pfn 7f)
+      --> Fault (page table entry not valid)
+      
+Virtual Address 2c03:
+  --> pde index:0x8  pde contents:(valid 1, pfn 44)
+    --> pte index:0xb  pte contents:(valid 1, pfn 57)
+      --> Translates to Physical Address ae3 --> Value: 16
+      
+Virtual Address 7fd7:
+  --> pde index:0x8  pde contents:(valid 1, pfn 12)
+    --> pte index:0xb  pte contents:(valid 0, pfn 7f)
+      --> Fault (page table entry not valid)
+      
+Virtual Address 390e:
+  --> pde index:0x8  pde contents:(valid 0, pfn 7f)
+      --> Fault (page directory entry not valid)
+      
+Virtual Address 748b:
+  --> pde index:0x8  pde contents:(valid 1, pfn 0)
+    --> pte index:0xb  pte contents:(valid 0, pfn 7f)
+      --> Fault (page table entry not valid)
 ```
 
 比如答案可以如下表示：

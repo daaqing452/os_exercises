@@ -30,7 +30,10 @@ x86保护模式中权限管理无处不在，下面哪些时候要检查访问�
  ```
 - [x]  
 
->  
+> * 完成段机制，对GDT进行了初始化
+> * 对物理内存进行探测，找到空闲的物理内存以备使用
+> × 建立页表，Page Directory、二级页表Page Table，
+> × 设置CR0寄存器的最高位来使能页表
 
 ---
 
@@ -110,7 +113,59 @@ va 0xcd82c07c, pa 0x0c20907c, pde_idx 0x00000336, pde_ctx  0x00037003, pte_idx 0
 
 - [x]  
 
-> 
+```
+va 0xc2265b1f, pa 0x0d8f1b1f, pde_idx 0x00000308, pde_ctx 0x00000309, pte_idx 0x00000265, pte_ctx 0x0000d8f1
+va 0xcc386bbc, pa 0x0414cbbc, pde_idx 0x00000330, pde_ctx 0x00000331, pte_idx 0x00000386, pte_ctx 0x0000414c
+va 0xc7ed4d57, pa 0x07311d57, pde_idx 0x0000031f, pde_ctx 0x00000320, pte_idx 0x000002d4, pte_ctx 0x00007311
+va 0xca6cecc0, pa 0x0c9e9cc0, pde_idx 0x00000329, pde_ctx 0x0000032a, pte_idx 0x000002ce, pte_ctx 0x0000c9e9
+va 0xc18072e8, pa 0x007412e8, pde_idx 0x00000306, pde_ctx 0x00000307, pte_idx 0x00000007, pte_ctx 0x00000741
+va 0xcd5f4b3a, pa 0x06ec9b3a, pde_idx 0x00000335, pde_ctx 0x00000336, pte_idx 0x000001f4, pte_ctx 0x00006ec9
+va 0xcc324c99, pa 0x0008ac99, pde_idx 0x00000330, pde_ctx 0x00000331, pte_idx 0x00000324, pte_ctx 0x0000008a
+va 0xc7204e52, pa 0x0b8b6e52, pde_idx 0x0000031c, pde_ctx 0x0000031d, pte_idx 0x00000204, pte_ctx 0x0000b8b6
+va 0xc3a90293, pa 0x0f1fd293, pde_idx 0x0000030e, pde_ctx 0x0000030f, pte_idx 0x00000290, pte_ctx 0x0000f1fd
+va 0xce6c3f32, pa 0x007d4f32, pde_idx 0x00000339, pde_ctx 0x0000033a, pte_idx 0x000002c3, pte_ctx 0x000007d4
+```
+```
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+
+typedef long long int64;
+int q[1 << 20];
+int N = 0;
+
+
+
+int trans(char c) {
+	if (c >= '0' && c <= '9') return c - '0';
+	return c - 'a' + 10;
+}
+
+int64 trans(string s) {
+	int64 ans = 0;
+	for (int i = 0; i < s.size(); ++i)
+		ans = ans * 16 + trans(s[i]);
+	return ans;
+}
+
+int main() {
+	for (int i = 0; i < 10; ++i) {
+		unsigned v, p;
+		scanf("%x%x", &v, &p);
+		
+		unsigned a = v >> 22;
+		unsigned b = a + 1;
+		unsigned c = (v << 10) >> 22;
+		unsigned d = p >> 12;
+		printf("va 0x%08x, pa 0x%08x, pde_idx 0x%08x, pde_ctx 0x%08x, pte_idx 0x%08x, pte_ctx 0x%08x\n", v, p, a, b, c, d);
+	}
+}
+```
 
 ---
 

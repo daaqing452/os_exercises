@@ -23,7 +23,7 @@ void main (void) {
   int i,j,k;
   for (k = 0; k<COUNT; k++)
   for (i = 0; i < NUM; i++)
-  for (j = 0; j	 < NUM; j++)
+  for (j = 0; j	< NUM; j++)
       A[i][j] = i+j;
   printf("%d count computing over!\n",i*j*k);
 }
@@ -34,6 +34,37 @@ gcc -O0 -o goodlocality goodlocality.c
 time ./goodlocality
 ```
 可以看到其执行时间。
+
+> 运行以上程序后，可得执行时间如下
+```
+real  0m0.032s
+user  0m0.027s
+sys   0m0.003s
+``
+> 真实时间基本上等于用户态时间加上系统调用时间。
+>
+> 交换A数组赋值的行列顺序，代码如下
+```
+#include <stdio.h>
+#define NUM 1024
+#define COUNT 10
+int A[NUM][NUM];
+void main (void) {
+  int i,j,k;
+  for (k = 0; k<COUNT; k++)
+  for (i = 0; i < NUM; i++)
+  for (j = 0; j	< NUM; j++)
+      A[j][i] = i+j;
+  printf("%d count computing over!\n",i*j*k);
+}
+```
+> 得到的执行时间如下
+```
+real  0m0.172s
+user  0m0.166s
+sys   0m0.003s
+```
+> 可以发现用户态执行时间明显增加。这是因为这样的赋值方式破坏了内存访问的局部性。
 
 ## 小组思考题目
 ----
@@ -117,6 +148,113 @@ Virtual Address 1e6f(0 001_11 10_011 0_1111):
   disk 16: 00 0a 15 1a 03 00 09 13 1c 0a 18 03 13 07 17 1c 
            0d 15 0a 1a 0c 12 1e 11 0e 02 1d 10 15 14 07 13
       --> To Disk Sector Address 0x2cf(0001011001111) --> Value: 1c
+```
+
+> 答案如下：
+```
+Virtual Address 6653:
+  --> pde index:19  pde contents:(valid 0, pfn 7f)
+      --> Fault (page directory entry not valid)
+
+Virtual Address 1c13:
+  --> pde index:7  pde contents:(valid 1, pfn 3d)
+    --> pte index:0  pte contents:(valid 1, pfn 76)
+      --> Translates to Physical Address ed3 --> Value: 12
+
+Virtual Address 6890:
+  --> pde index:1a  pde contents:(valid 0, pfn 7f)
+      --> Fault (page directory entry not valid)
+	  
+Virtual Address af6:
+  --> pde index:2  pde contents:(valid 1, pfn 21)
+    --> pte index:17	pte contents:(valid 0, pfn 7f)
+      --> Translates to Disk Address ff6 --> Value: 3
+	  
+Virtual Address 1e6f:
+  --> pde index:7  pde contents:(valid 1, pfn 3d)
+    --> pte index:13  pte contents:(valid 0, pfn 16)
+      --> Translates to Disk Address 2cf --> Value: 1c
+```
+> 代码如下：
+```
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+
+int q[1 << 20], q2[1 << 20];
+int N = 0, N2 = 0;
+
+
+
+int trans(char c) {
+	if (c >= '0' && c <= '9') return c - '0';
+	return c - 'a' + 10;
+}
+
+int trans(string s) {
+	int ans = 0;
+	for (int i = 0; i < s.size(); ++i)
+		ans = ans * 16 + trans(s[i]);
+	return ans;
+}
+
+int main() {
+	ifstream fin("a.txt");
+	string tmp;
+	while (fin >> tmp >> tmp) {
+		for (int i = 0; i < 32; ++i) {
+			fin >> tmp;
+			q[N++] = trans(tmp);
+		}
+	}
+	fin.close();
+	
+	ifstream fin2("b.txt");
+	string tmp2;
+	while (fin2 >> tmp2 >> tmp2) {
+		for (int i = 0; i < 32; ++i) {
+			fin2 >> tmp2;
+			q2[N2++] = trans(tmp2);
+		}
+	}
+	
+	int start = 0xd80;
+	cin >> tmp;
+	int x = trans(tmp);
+	printf("Virtual Address %x:\n", x);
+	
+	int a = x >> 10;
+	int b = (x >> 5) & 0x1f;
+	int c = x & 0x1f;
+	
+	int d = q[start + a] >> 7;
+	int e = q[start + a] & 0x7f;
+	printf("  --> pde index:%x  pde contents:(valid %x, pfn %x)\n", a, d, e);
+	if (d == 0 || start + e > 0xfff) {
+		printf("      --> Fault (page directory entry not valid)\n");
+		exit(0);
+	}
+	
+	int f = q[(e << 5) + b] >> 7;
+	int g = q[(e << 5) + b] & 0x7f;
+	int h = (g << 5) + c;
+	printf("    --> pte index:%x  pte contents:(valid %x, pfn %x)\n", b, f, g);
+	if (h > 0xfff) {
+		printf("      --> Fault (page table entry not valid)\n");
+		exit(0);
+	}
+	
+	if (f == 0) {
+		printf("      --> Translates to Disk Address %x --> Value: %x\n", h, q2[h]);
+	} else {
+		printf("      --> Translates to Physical Address %x --> Value: %x\n", h, q[h]);
+	}
+}
 ```
 
 ## 扩展思考题

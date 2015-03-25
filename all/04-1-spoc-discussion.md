@@ -180,25 +180,18 @@ Virtual Address 1e6f:
 #include <iostream>
 #include <fstream>
 using namespace std;
-```
-```
 int q[1 << 20], q2[1 << 20];
 int N = 0, N2 = 0;
-
-
-
 int trans(char c) {
 	if (c >= '0' && c <= '9') return c - '0';
 	return c - 'a' + 10;
 }
-
 int trans(string s) {
 	int ans = 0;
 	for (int i = 0; i < s.size(); ++i)
 		ans = ans * 16 + trans(s[i]);
 	return ans;
 }
-
 int main() {
 	ifstream fin("a.txt");
 	string tmp;
@@ -209,7 +202,6 @@ int main() {
 		}
 	}
 	fin.close();
-	
 	ifstream fin2("b.txt");
 	string tmp2;
 	while (fin2 >> tmp2 >> tmp2) {
@@ -218,16 +210,13 @@ int main() {
 			q2[N2++] = trans(tmp2);
 		}
 	}
-	
 	int start = 0xd80;
 	cin >> tmp;
 	int x = trans(tmp);
 	printf("Virtual Address %x:\n", x);
-	
 	int a = x >> 10;
 	int b = (x >> 5) & 0x1f;
 	int c = x & 0x1f;
-	
 	int d = q[start + a] >> 7;
 	int e = q[start + a] & 0x7f;
 	printf("  --> pde index:%x  pde contents:(valid %x, pfn %x)\n", a, d, e);
@@ -235,7 +224,6 @@ int main() {
 		printf("      --> Fault (page directory entry not valid)\n");
 		exit(0);
 	}
-	
 	int f = q[(e << 5) + b] >> 7;
 	int g = q[(e << 5) + b] & 0x7f;
 	int h = (g << 5) + c;
@@ -244,7 +232,6 @@ int main() {
 		printf("      --> Fault (page table entry not valid)\n");
 		exit(0);
 	}
-	
 	if (f == 0) {
 		printf("      --> Translates to Disk Address %x --> Value: %x\n", h, q2[h]);
 	} else {

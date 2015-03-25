@@ -155,21 +155,17 @@ Virtual Address 1e6f(0 001_11 10_011 0_1111):
 Virtual Address 6653:
   --> pde index:19  pde contents:(valid 0, pfn 7f)
       --> Fault (page directory entry not valid)
-
 Virtual Address 1c13:
   --> pde index:7  pde contents:(valid 1, pfn 3d)
     --> pte index:0  pte contents:(valid 1, pfn 76)
       --> Translates to Physical Address ed3 --> Value: 12
-
 Virtual Address 6890:
   --> pde index:1a  pde contents:(valid 0, pfn 7f)
       --> Fault (page directory entry not valid)
-	  
 Virtual Address af6:
   --> pde index:2  pde contents:(valid 1, pfn 21)
     --> pte index:17	pte contents:(valid 0, pfn 7f)
       --> Translates to Disk Address ff6 --> Value: 3
-	  
 Virtual Address 1e6f:
   --> pde index:7  pde contents:(valid 1, pfn 3d)
     --> pte index:13  pte contents:(valid 0, pfn 16)
@@ -184,8 +180,8 @@ Virtual Address 1e6f:
 #include <iostream>
 #include <fstream>
 using namespace std;
-
-
+```
+```
 int q[1 << 20], q2[1 << 20];
 int N = 0, N2 = 0;
 

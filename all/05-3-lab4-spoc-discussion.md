@@ -47,6 +47,10 @@ tf和context中的esp
 
 ### 练习用的[lab4 spoc exercise project source code](https://github.com/chyyuu/ucore_lab/tree/master/related_info/lab4/lab4-spoc-discuss)
 
+```
+https://github.com/daaqing452/ucore_lab/blob/master/related_info/lab4/lab4-spoc-discuss/kern/process/proc.c
+```
+
 
 请完成如下练习，完成代码填写，并形成spoc练习报告
 

@@ -52,6 +52,10 @@ https://github.com/chyyuu/ucore_lab/blob/master/related_info/lab1/lab1-boot-with
 
 ### 练习用的[lab5 spoc exercise project source code](https://github.com/chyyuu/ucore_lab/tree/master/related_info/lab5/lab5-spoc-discuss)
 
+```
+https://github.com/daaqing452/ucore_lab/blob/master/related_info/lab5/lab5-spoc-discuss/kern/process/proc.c
+```
+
 #### 掌握知识点
 1. 用户进程的启动、运行、就绪、等待、退出
 2. 用户进程的管理与简单调度

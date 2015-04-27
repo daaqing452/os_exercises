@@ -39,6 +39,8 @@
 请完成如下练习，完成代码填写，并形成spoc练习报告
 > 需写练习报告和简单编码，完成后放到git server 对应的git repo中
 
-### 练习用的[lab6 spoc exercise project source code](https://github.com/chyyuu/ucore_lab/tree/master/labcodes_answer/lab6_result)
+### 练习用的[lab6 spo
+c exercise project source code](https://github.com/chyyuu/ucore_lab/tree/master/labcodes_answer/lab6_result)
 
 
+> https://github.com/THUxiexiaohui/ucore_lab/tree/master/labcodes_answer/lab6_result

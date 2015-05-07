@@ -1484,3 +1484,196 @@ Jurassic公园有一个恐龙博物馆和一个花园，有m 个旅客租卫辆�
 
 	容易证明这种方法保证了互斥,对于进程0,一旦它设置flag[0]为true,进程1就不能进入其临界段.若进程1已经在其临界段中，那么flag [1]=true并且进程0被阻塞进入临界段.另一方面,防止了相互阻塞,假设进程0阻塞于while循环,这意味着flag[1]为true,而且turn=1,当flag[1]为false或turn为0时,进程0就可进入自己的临界段了.
 	```
+	
+	
+信号量
+```
+#coding=utf-8
+
+import random
+import threading
+import time
+
+
+#	限定读上限为3
+CanRead = threading.Semaphore(3)
+
+#	写锁，在读的时候打开，保证不能写
+CanWrite = threading.Semaphore(1)
+
+#	读进入等待队列的锁，在写进入的时候打开，保证读不会跳到写的前面
+CanReadIn = threading.Semaphore(1)
+
+#	读个数
+readerCnt = 0
+
+
+#	暂停
+def rest():
+	time.sleep(random.randrange(1, 4))
+
+
+#	读
+class Reader(threading.Thread):
+	def __init__(self, threadName):
+		threading.Thread.__init__(self, name = threadName)
+	def run(self):
+		global CanRead, CanWrite, CanReadIn, readerCnt
+		while True:
+			#	判断读能进等待队列
+			CanReadIn.acquire()
+			CanReadIn.release()
+			
+			#	判断当前能否读
+			CanRead.acquire()
+			
+			#	在读者数从0变成1的时候打开写锁
+			if readerCnt == 0:
+				CanWrite.acquire()
+			readerCnt += 1
+			
+			print "%s read start\n" % (self.name)
+			rest()
+			print "%s read end\n" % (self.name)
+			
+			#	在读者数从1变成0的时候关闭写锁
+			readerCnt -= 1
+			if readerCnt == 0:
+				CanWrite.release()
+			
+			CanRead.release()
+			rest()
+
+
+#	写
+class Writer(threading.Thread):
+	def __init__(self, threadName):
+		threading.Thread.__init__(self,name = threadName)
+	def run(self):
+		global CanRead, CanWrite, CanReadIn, readerCnt
+		while True:
+			#	打开锁防止读进入等待队列
+			CanReadIn.acquire()
+			
+			#	判断是否可写
+			CanWrite.acquire()
+			
+			print "%s write start\n" % (self.name)
+			rest()
+			print "%s write end\n" % (self.name)
+			
+			CanWrite.release()
+			CanReadIn.release()
+			rest()
+
+if __name__ == "__main__":
+	for i in range(1, 5):
+		thread = Reader("reader " + str(i))
+		thread.start()
+	for i in range(1, 2):
+		thread = Writer("writer " + str(i))
+		thread.start()
+```
+
+ 
+条件变量
+```
+#coding=utf-8
+
+import random
+import threading
+import time
+
+
+#	锁
+Lock = threading.Condition()
+
+#	活动读的个数
+AR = 0
+
+#	活动写的个数
+AW = 0
+
+#	等待读的个数
+WR = 0
+
+#	等待写的个数
+WW = 0
+
+
+#	暂停
+def rest():
+	time.sleep(random.randrange(1, 4))
+
+
+#	读
+class Reader(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self)
+	def run(self):
+		global Lock, AR, AW, WR, WW
+		while True:
+			Lock.acquire()
+			
+			#	变成等待读，直到没有写以及活动读小于等于2个
+			while (AW + WW) > 0 or AR > 2:
+				WR = WR + 1
+				Lock.wait()
+				WR = WR - 1
+			
+			#	转化为活动读
+			AR = AR + 1
+			Lock.release()
+			
+			print "%s read start\n" % (self.name)
+			rest()
+			print "%s read end\n" % (self.name)
+			
+			#	结束
+			Lock.acquire()
+			AR = AR - 1
+			Lock.notifyAll()
+			Lock.release()
+			
+			rest()
+			
+
+class Writer(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self)
+	def run(self):
+		global Lock, AR, AW, WR, WW
+		while True:
+			Lock.acquire()
+			
+			#	变成等待写，直到没有活动读和活动写
+			while (AW + AR) > 0:
+				WW = WW + 1
+				Lock.wait()
+				WW = WW - 1
+				
+			#	变成活动写
+			AW = AW + 1
+			Lock.release()
+			
+			print "%s write start\n" % (self.name)
+			rest()
+			print "%s write end\n" % (self.name)
+			
+			#	结束
+			Lock.acquire()
+			AW = AW - 1
+			Lock.notifyAll()
+			Lock.release()
+			
+			rest()
+
+if __name__ == "__main__":
+	for r in range(0, 5):
+		r = Reader()
+		r.start()
+
+	for w in range(0, 2):
+		w = Writer()
+		w.start() 
+```

@@ -310,8 +310,6 @@ else:
 
  - (spoc) 以小组为单位，请思考在lab1~lab5的基础上，是否能够实现IPC机制，请写出如何实现信号，管道或共享内存（三选一）的设计方案。
  
- - (spoc) 扩展：用C语言实现某daemon程序，可检测某网络服务失效或崩溃，并用信号量机制通知重启网络服务。[信号机制的例子](https://github.com/chyyuu/ucore_lab/blob/master/related_info/lab7/ipc/signal-ex1.c)
-
 ```
 信号：
 1. 在初始化的时候，在中断（例如键盘输入）的服务例程中判断某些特殊键组合（比如Ctrl-C），识别为一个信号，产生信号号
@@ -321,5 +319,7 @@ else:
 5. 修改trapframe中的eip设为信号处理函数的x
 6. 中断结束返回用户态后，进程会从x开始执行信号处理函数，处理完信号处理函数，进程会以正常函数调用返回的方式，返回之前中断的位置继续执行
 ```
+
+ - (spoc) 扩展：用C语言实现某daemon程序，可检测某网络服务失效或崩溃，并用信号量机制通知重启网络服务。[信号机制的例子](https://github.com/chyyuu/ucore_lab/blob/master/related_info/lab7/ipc/signal-ex1.c)
 
  - (spoc) 扩展：用C语言写测试用例，测试管道、消息队列和共享内存三种通信机制进行不同通信间隔和通信量情况下的通信带宽、通信延时、带宽抖动和延时抖动方面的性能差异。[管道的例子](https://github.com/chyyuu/ucore_lab/blob/master/related_info/lab7/ipc/pipe-ex2.c)

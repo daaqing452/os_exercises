@@ -51,3 +51,5 @@
 2. （spoc） 在下面的实验代码的基础上，实现基于文件系统的pipe IPC机制
 
 ### 练习用的[lab8 spoc exercise project source code](https://github.com/chyyuu/ucore_lab/tree/master/labcodes_answer/lab8_result)
+
+> https://github.com/lgh303/ucore_lab/tree/master/labcodes_answer/lab8_result/

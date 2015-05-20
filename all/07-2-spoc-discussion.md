@@ -250,4 +250,4 @@ if __name__ == "__main__":
 
 
 2. (spoc)设计某个方法，能够动态检查出对于两个或多个进程的同步互斥问题执行中，没有互斥问题，能够同步等，以说明实现的正确性。
-github.com/mymoon
+> https://github.com/mymoon
